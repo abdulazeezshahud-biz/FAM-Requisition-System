@@ -1,0 +1,25 @@
+# PocketBase 0.39.5 + the FAM server hook, in a small Alpine image.
+FROM alpine:3.20
+
+ARG PB_VERSION=0.39.5
+# TARGETARCH is provided automatically by Docker buildx (amd64 / arm64).
+ARG TARGETARCH=amd64
+
+RUN apk add --no-cache ca-certificates unzip wget && \
+    PB_ARCH=$([ "$TARGETARCH" = "arm64" ] && echo arm64 || echo amd64) && \
+    wget -q -O /tmp/pb.zip \
+      "https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_${PB_ARCH}.zip" && \
+    unzip -q /tmp/pb.zip -d /pb && rm /tmp/pb.zip
+
+# The application hook (server-side numbering, audit, approval sync, AI, Odoo).
+COPY pb_hooks/ /pb/pb_hooks/
+
+# Create the superuser from env on start (idempotent), then serve.
+COPY pb-entrypoint.sh /pb/entrypoint.sh
+RUN chmod +x /pb/entrypoint.sh
+
+EXPOSE 8090
+VOLUME /pb/pb_data
+HEALTHCHECK --interval=30s --timeout=5s --start-period=8s \
+  CMD wget -qO- http://127.0.0.1:8090/api/health || exit 1
+ENTRYPOINT ["/pb/entrypoint.sh"]

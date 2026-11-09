@@ -1,0 +1,75 @@
+# FAM Requisition System — full stack.
+#
+#   1. cp .env.example .env   and edit the values
+#   2. docker compose up -d --build            # start PocketBase + frontend + HTTPS proxy
+#   3. docker compose run --rm provision       # create schema + seed starter users (once)
+#
+# The generated starter logins are written to ./fam-req-credentials.txt on the
+# host — hand each line to its user, then delete the file.
+#
+# Data lives in the pb_data volume; back it up. See HANDOFF.md for the full guide.
+
+services:
+  pocketbase:
+    build:
+      context: .
+      dockerfile: Dockerfile.pocketbase
+    restart: unless-stopped
+    environment:
+      - PB_ADMIN=${PB_ADMIN}
+      - PB_ADMIN_PASS=${PB_ADMIN_PASS}
+      # Optional server-side features (leave unset to disable):
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - FAM_AI_MODEL=${FAM_AI_MODEL:-}
+      - ODOO_API_KEY=${ODOO_API_KEY:-}
+    volumes:
+      - pb_data:/pb/pb_data
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      # Single-domain: the browser reaches PocketBase under the same domain.
+      - PB_URL=https://${DOMAIN}
+    depends_on:
+      - pocketbase
+
+  caddy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+      - pocketbase
+
+  # One-shot: create the database schema and seed starter users/settings.
+  # Run with:  docker compose run --rm provision
+  provision:
+    image: node:20-alpine
+    profiles: ["setup"]
+    working_dir: /app
+    environment:
+      - PB_URL=http://pocketbase:8090
+      - PB_ADMIN=${PB_ADMIN}
+      - PB_ADMIN_PASS=${PB_ADMIN_PASS}
+      - SEED=${SEED:-1}
+    volumes:
+      - ./:/app
+    command: ["node", "scripts/provision-pb.mjs"]
+    depends_on:
+      - pocketbase
+
+volumes:
+  pb_data:
+  caddy_data:
+  caddy_config:

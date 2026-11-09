@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAM Requisition System — User Manual</title>
+<style>
+  html,body{margin:0;background:#f4f5f7}
+  .pdfbar{position:fixed;top:14px;right:16px;z-index:50;display:flex;gap:8px}
+  .pdfbar a,.pdfbar button{font:600 13px/1 -apple-system,Segoe UI,Roboto,sans-serif;
+    background:#fff;color:#171b21;border:1px solid #d7dbe0;border-radius:8px;padding:9px 13px;
+    cursor:pointer;text-decoration:none;box-shadow:0 2px 6px rgba(16,20,28,.08)}
+  .pdfbar a{background:#C8102E;color:#fff;border-color:#C8102E}
+  .pdfbar a:hover{background:#a90d27}
+  @media print{.pdfbar{display:none}}
+</style>
+</head>
+<body>
+<div class="pdfbar">
+  <a href="manual.pdf" download="FAM-Requisition-Manual.pdf">⤓ Download PDF</a>
+  <button onclick="window.print()">🖨 Print</button>
+</div><style>
+  :root{
+    --paper:#f4f5f7; --card:#ffffff; --ink:#171b21; --ink-2:#4c5461; --ink-3:#7a828f;
+    --line:#e3e6ea; --line-2:#eef0f3;
+    --fam:#C8102E; --fam-ink:#8f0a1f; --fam-wash:#fdf2f3;
+    --green:#177d43; --green-wash:#eef7f1;
+    --amber:#b26a08; --amber-wash:#fbf3e7;
+    --blue:#1f5fce; --blue-wash:#eef3fc;
+    --slate:#5a626e; --slate-wash:#f0f2f5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,"Liberation Mono",monospace;
+    --maxw:1160px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0}
+  .doc{
+    font-family:var(--sans); color:var(--ink); background:var(--paper);
+    font-size:16px; line-height:1.62; -webkit-font-smoothing:antialiased;
+  }
+  .doc :is(h1,h2,h3,h4){text-wrap:balance; line-height:1.2}
+
+  /* ---------- masthead ---------- */
+  .mast{background:var(--ink); color:#fff; padding:44px 28px 40px}
+  .mast-in{max-width:var(--maxw); margin:0 auto; display:flex; align-items:center; gap:22px; flex-wrap:wrap}
+  .crest{
+    width:64px; height:64px; border-radius:14px; flex:none;
+    background:linear-gradient(150deg,var(--fam),#9c0c22);
+    display:grid; place-items:center; color:#fff; font-family:var(--serif);
+    font-weight:700; font-size:23px; letter-spacing:.5px;
+    box-shadow:0 6px 20px rgba(200,16,46,.35);
+  }
+  .mast h1{font-family:var(--serif); font-size:30px; margin:0; font-weight:700; letter-spacing:.2px}
+  .mast .sub{color:#c3c9d4; font-size:14.5px; margin-top:3px}
+  .mast .eyebrow{font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--fam); font-weight:700; margin-bottom:6px}
+  .mast .meta{margin-left:auto; text-align:right; font-size:12.5px; color:#9aa2af; line-height:1.7}
+  .mast .meta b{color:#e7eaef; font-weight:600}
+
+  /* ---------- shell ---------- */
+  .shell{max-width:var(--maxw); margin:0 auto; padding:0 28px; display:grid; grid-template-columns:236px 1fr; gap:44px; align-items:start}
+  .toc{position:sticky; top:22px; padding:26px 0; font-size:13.5px; max-height:100vh; overflow:auto}
+  .toc .tt{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); font-weight:700; margin:0 0 10px}
+  .toc ol{list-style:none; margin:0 0 18px; padding:0; counter-reset:s}
+  .toc li{counter-increment:s; margin:1px 0}
+  .toc a{display:flex; gap:9px; text-decoration:none; color:var(--ink-2); padding:5px 10px; border-radius:7px; border-left:2px solid transparent}
+  .toc a::before{content:counter(s,decimal-leading-zero); font-family:var(--mono); font-size:11px; color:var(--ink-3); padding-top:2px}
+  .toc a:hover{background:#fff; color:var(--ink)}
+  .content{padding:30px 0 90px; min-width:0}
+
+  section{scroll-margin-top:20px; margin-bottom:12px; padding-bottom:20px}
+  section+section{border-top:1px solid var(--line-2); padding-top:30px}
+  h2{font-family:var(--serif); font-size:25px; margin:0 0 6px; display:flex; align-items:baseline; gap:12px}
+  h2 .n{font-family:var(--mono); font-size:14px; color:var(--fam); font-weight:600; flex:none}
+  h3{font-size:16.5px; margin:26px 0 8px; letter-spacing:.1px}
+  .lede{color:var(--ink-2); font-size:16.5px; margin:2px 0 4px; max-width:64ch}
+  p{margin:12px 0; max-width:70ch}
+  a.inl{color:var(--fam-ink); text-decoration:underline; text-underline-offset:2px}
+  code,.kbd{font-family:var(--mono); font-size:.86em; background:var(--slate-wash); padding:1px 6px; border-radius:5px; border:1px solid var(--line)}
+  strong{font-weight:650}
+
+  ol.steps{counter-reset:st; list-style:none; margin:14px 0; padding:0; max-width:72ch}
+  ol.steps>li{counter-increment:st; position:relative; padding:3px 0 12px 40px; margin:0}
+  ol.steps>li::before{content:counter(st); position:absolute; left:0; top:1px; width:26px; height:26px; border-radius:50%; background:var(--fam-wash); color:var(--fam-ink); font-weight:700; font-size:13px; display:grid; place-items:center; font-family:var(--mono)}
+  ol.steps>li:not(:last-child)::after{content:""; position:absolute; left:13px; top:29px; bottom:2px; width:1.5px; background:var(--line)}
+
+  ul.tick{list-style:none; margin:12px 0; padding:0; max-width:70ch}
+  ul.tick>li{position:relative; padding:2px 0 2px 26px; margin:5px 0}
+  ul.tick>li::before{content:"›"; position:absolute; left:6px; top:1px; color:var(--fam); font-weight:700}
+
+  .callout{border:1px solid var(--line); border-left-width:4px; border-radius:9px; background:var(--card); padding:13px 16px; margin:16px 0; font-size:14.7px; break-inside:avoid}
+  .callout .lbl{font-weight:700; font-size:11px; letter-spacing:.1em; text-transform:uppercase; display:block; margin-bottom:3px}
+  .callout p{margin:4px 0; max-width:none}
+  .callout.tip{border-left-color:var(--blue); background:var(--blue-wash)} .callout.tip .lbl{color:var(--blue)}
+  .callout.who{border-left-color:var(--green); background:var(--green-wash)} .callout.who .lbl{color:var(--green)}
+  .callout.warn{border-left-color:var(--amber); background:var(--amber-wash)} .callout.warn .lbl{color:var(--amber)}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0}
+  .mini{background:var(--card); border:1px solid var(--line); border-radius:11px; padding:16px 18px}
+  .mini h4{margin:0 0 6px; font-size:15px}
+  .mini p{margin:0; font-size:14.3px; color:var(--ink-2); max-width:none}
+
+  .tbl{width:100%; border-collapse:collapse; margin:16px 0; font-size:14.3px; background:var(--card); border:1px solid var(--line); border-radius:11px; overflow:hidden}
+  .tbl th,.tbl td{text-align:left; padding:10px 14px; border-bottom:1px solid var(--line-2); vertical-align:top}
+  .tbl th{background:#fafbfc; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); font-weight:700}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl td:first-child{white-space:nowrap}
+
+  .chip{display:inline-block; font-size:11.5px; font-weight:600; padding:2px 9px; border-radius:20px; white-space:nowrap; font-family:var(--sans)}
+  .c-amber{background:var(--amber-wash); color:var(--amber)} .c-green{background:var(--green-wash); color:var(--green)}
+  .c-blue{background:var(--blue-wash); color:var(--blue)} .c-red{background:var(--fam-wash); color:var(--fam-ink)}
+  .c-slate{background:var(--slate-wash); color:var(--slate)}
+
+  .flow{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:14px 0; padding:14px 16px; background:var(--card); border:1px solid var(--line); border-radius:11px}
+  .flow .st{font-size:13px; font-weight:600; background:var(--slate-wash); padding:6px 11px; border-radius:8px; white-space:nowrap}
+  .flow .ar{color:var(--ink-3); font-weight:700}
+  .flow .opt{background:var(--amber-wash); color:var(--amber)}
+
+  .kbd{background:#fff}
+  .lead-tag{display:inline-block; font-family:var(--mono); font-size:12px; color:var(--fam-ink); background:var(--fam-wash); border:1px solid #f4d6da; padding:1px 7px; border-radius:6px; margin-right:6px}
+
+  footer.end{max-width:var(--maxw); margin:0 auto; padding:26px 28px 60px; color:var(--ink-3); font-size:13px; border-top:1px solid var(--line)}
+
+  @media (max-width:820px){
+    .shell{grid-template-columns:1fr; gap:0}
+    .toc{position:static; max-height:none; padding:20px 0 6px; border-bottom:1px solid var(--line)}
+    .toc ol{columns:2; column-gap:16px}
+    .grid2{grid-template-columns:1fr}
+    .mast .meta{margin-left:0; text-align:left; width:100%}
+  }
+  @media print{
+    .doc{background:#fff; font-size:11.5pt}
+    .toc{display:none}
+    .shell{grid-template-columns:1fr; padding:0}
+    .mast{background:#fff; color:#000; border-bottom:3px solid var(--fam); padding:0 0 14px}
+    .mast .sub,.mast .meta{color:#444} .mast .meta b{color:#000}
+    .crest{box-shadow:none}
+    section,.callout,.mini,.tbl,ol.steps>li{break-inside:avoid}
+    section+section{border-top:none}
+    a.inl{color:#000}
+  }
+</style>
+
+<div class="doc">
+  <header class="mast">
+    <div class="mast-in">
+      <div class="crest">FAM</div>
+      <div>
+        <div class="eyebrow">Football Association of Maldives</div>
+        <h1>Requisition System — User Manual</h1>
+        <div class="sub">How to raise, approve, pay and report on purchases and expenses.</div>
+      </div>
+      <div class="meta">
+        <div><b>For</b> all FAM staff &amp; approvers</div>
+        <div><b>Access</b> web browser &amp; mobile</div>
+        <div><b>Version</b> 2.0 · November 2026</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="toc">
+      <p class="tt">Contents</p>
+      <ol>
+        <li><a href="#start">Getting started</a></li>
+        <li><a href="#roles">Roles &amp; access</a></li>
+        <li><a href="#dashboard">The dashboard</a></li>
+        <li><a href="#types">The three request types</a></li>
+        <li><a href="#purchase">Raising a purchase requisition</a></li>
+        <li><a href="#quotes">Quotations &amp; the AI reader</a></li>
+        <li><a href="#reimb">Reimbursable expenses</a></li>
+        <li><a href="#credit">Credit service requests</a></li>
+        <li><a href="#approve">Approving in the app</a></li>
+        <li><a href="#links">Approving by link</a></li>
+        <li><a href="#paper">Signing on paper</a></li>
+        <li><a href="#hold">Reject, hold &amp; reopen</a></li>
+        <li><a href="#grn">Goods received</a></li>
+        <li><a href="#pay">Payment, Odoo &amp; documents</a></li>
+        <li><a href="#combine">Combining expenses</a></li>
+        <li><a href="#vendors">Vendors</a></li>
+        <li><a href="#reports">Reports &amp; exports</a></li>
+        <li><a href="#activity">Activity log</a></li>
+        <li><a href="#admin">Admin settings</a></li>
+        <li><a href="#status">Status reference</a></li>
+        <li><a href="#faq">Tips &amp; FAQ</a></li>
+      </ol>
+    </nav>
+
+    <main class="content">
+
+      <section id="start">
+        <h2><span class="n">01</span> Getting started</h2>
+        <p class="lede">The Requisition System is where FAM prepares purchases and expenses, collects the required signatures, records goods received and payment, and keeps every supporting document for audit — all in one place, on any device.</p>
+        <h3>Signing in</h3>
+        <ol class="steps">
+          <li>Open the system in your web browser. Your administrator will give you the web address (you can bookmark it or add it to your phone's home screen).</li>
+          <li>Enter your <strong>username</strong> and <strong>password</strong>, then choose <strong>Sign in</strong>. These are personal to you — every action you take is recorded under your name.</li>
+          <li>You land on the <strong>Dashboard</strong>. What you can see and do depends on your role (next section).</li>
+        </ol>
+        <div class="callout tip"><span class="lbl">Good to know</span>
+          <p>Everything you do syncs instantly across devices. Prepare a requisition on your office computer, and an approver sees it on their phone a moment later.</p></div>
+        <div class="callout warn"><span class="lbl">Forgot your password, or locked out?</span>
+          <p>Contact an administrator — they can set a new password for you from <strong>Admin → Users</strong> in seconds. After several wrong passwords in a row, sign-in pauses for <strong>10 minutes</strong> to protect your account; wait, then try again.</p></div>
+      </section>
+
+      <section id="roles">
+        <h2><span class="n">02</span> Roles &amp; access</h2>
+        <p class="lede">Your role decides which parts of the system you use. If a button described in this manual isn't visible to you, your role doesn't include that action.</p>
+        <table class="tbl">
+          <thead><tr><th>Role</th><th>What you can do</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Viewer</strong></td><td>Read-only. See requisitions, their progress, and reports. Cannot create or approve.</td></tr>
+            <tr><td><strong>Approver</strong></td><td>Everything a viewer can do, plus <strong>sign the approval steps</strong> assigned to you (e.g. Department Head, General Secretary, President), and raise your own expense requests.</td></tr>
+            <tr><td><strong>Finance</strong></td><td>Create requisitions, send approval links, record paper signatures, goods received, payment and Odoo posting, upload documents, combine expenses, and run reports.</td></tr>
+            <tr><td><strong>Admin</strong></td><td>Full access, plus the <strong>Admin</strong> tab — system settings (numbering, tax rates, approval chain, low-value rule, lists, Odoo) and managing users.</td></tr>
+          </tbody>
+        </table>
+        <p>An approver is also linked to one or more <strong>signing rights</strong> — the specific chain steps they're allowed to sign (for example, the General Secretary can only sign the "General Secretary" step). This is set up per person by an administrator.</p>
+      </section>
+
+      <section id="dashboard">
+        <h2><span class="n">03</span> The dashboard</h2>
+        <p class="lede">The dashboard is your at-a-glance overview. It's the fastest way to see what needs your attention and where money is going.</p>
+        <div class="grid2">
+          <div class="mini"><h4>Headline figures</h4><p>Total requisitions, total value (shown per currency), how many are awaiting approval, and how many are waiting on <em>you</em> specifically.</p></div>
+          <div class="mini"><h4>Pipeline</h4><p>A simple count of where everything sits: awaiting approval, on hold, approved-but-unpaid, paid, completed, and rejected.</p></div>
+          <div class="mini"><h4>Value by project</h4><p>Spend grouped by project, so you can see which events or campaigns are consuming the budget.</p></div>
+          <div class="mini"><h4>Recent requisitions</h4><p>The latest items with their status — click any row to open it.</p></div>
+        </div>
+        <p>Use the menu (top bar, or the ☰ button on a phone) to move between <strong>Dashboard</strong>, <strong>Requisitions</strong>, <strong>Approvals</strong>, <strong>Projects</strong>, <strong>Vendors</strong>, <strong>Reports</strong> and — for admins — <strong>Admin</strong>.</p>
+      </section>
+
+      <section id="types">
+        <h2><span class="n">04</span> The three request types</h2>
+        <p class="lede">Choose the right type when you start. It determines the approval steps, the numbering, and how the item is paid.</p>
+        <table class="tbl">
+          <thead><tr><th>Type</th><th>Use it when…</th><th>Approval</th><th>Paid to</th></tr></thead>
+          <tbody>
+            <tr><td><span class="lead-tag">FAM/REQ</span><strong>Purchase requisition</strong></td><td>You're buying goods or services and need the full sign-off before committing.</td><td>Full chain</td><td>The vendor</td></tr>
+            <tr><td><span class="lead-tag">FAM/EXP</span><strong>Reimbursable expense</strong></td><td>A staff member paid out of their own pocket and needs to be paid back.</td><td>Dept Head only</td><td>The staff member</td></tr>
+            <tr><td><span class="lead-tag">FAM/CSR</span><strong>Credit service request</strong></td><td>An expense is incurred <em>on credit</em> — the vendor bills FAM later (e.g. a food or transport bill from an island).</td><td>Dept Head first</td><td>The vendor</td></tr>
+          </tbody>
+        </table>
+        <p>The standard purchase approval chain runs top to bottom:</p>
+        <div class="flow">
+          <span class="st">Department Head</span><span class="ar">→</span>
+          <span class="st">Finance Manager / Accounts <span style="color:var(--ink-3);font-weight:400">(budget)</span></span><span class="ar">→</span>
+          <span class="st">General Secretary</span><span class="ar">→</span>
+          <span class="st">President / S.VP / VP</span>
+        </div>
+        <p>Each step must be signed before the next becomes active. Administrators can change the order, rename steps, add or remove them, or switch a step off from <strong>Admin → Approval chain</strong> — changes apply to new requisitions only.</p>
+        <div class="callout tip"><span class="lbl">Smaller purchases</span>
+          <p>If your administrator has turned on the <strong>low-value rule</strong>, purchases below a set amount need fewer quotations and only the approvers they selected. The requisition form always shows exactly which steps and how many quotations apply to <em>your</em> request.</p></div>
+      </section>
+
+      <section id="purchase">
+        <h2><span class="n">05</span> Raising a purchase requisition</h2>
+        <p class="lede">This is the core workflow. Only Finance and Admin roles create purchase requisitions.</p>
+        <ol class="steps">
+          <li>From the Dashboard or Requisitions page, choose <strong>New Requisition</strong>. The number shown while you type is provisional — the server confirms the final <strong>number</strong> (e.g. <code>FAM/REQ/2026/012</code>) the moment you save, so two people saving at once never get the same one.</li>
+          <li>Set the <strong>date</strong>, <strong>department</strong>, and <strong>currency</strong> (for example MVR, USD, or CHF for FIFA payments). The chosen currency shows on every amount, print, and report.</li>
+          <li>Pick a <strong>budget line</strong> from FAM's chart of accounts. If the spend is outside the budget, choose the <strong>Suspense</strong> line — it's flagged so finance can reallocate it later.</li>
+          <li>Add a <strong>project</strong> (optional) for per-event cost tracking, and write a clear <strong>purpose</strong>.</li>
+          <li>Add your <strong>items</strong> — description, quantity, and rate. The amount for each line is worked out for you.</li>
+          <li>Choose the <strong>Tax</strong>: <strong>No tax</strong>, <strong>GST 8%</strong> or <strong>TGST 17%</strong> (tourism GST). Pick what the vendor charged — the total updates and every print shows the tax applied.</li>
+          <li>Attach your <strong>quotations</strong> and mark the one you're going with (see the next section). The form shows how many quotations this request needs — usually three — and won't save until that many are attached with an amount.</li>
+          <li>Set the <strong>payee</strong> (the vendor to be paid), <strong>prepared by</strong>, and the <strong>target days</strong> (your service-level target for the whole approval).</li>
+          <li>Check the approval steps shown on the form, then choose <strong>Create requisition</strong>. It now enters the approval chain at the first step.</li>
+        </ol>
+        <div class="callout tip"><span class="lbl">Editing</span>
+          <p>You can edit a requisition until approvals begin. After the first signature, the amounts and chain lock to preserve the audit trail — but you can still attach documents, record goods received, and record payment.</p></div>
+        <div class="callout who"><span class="lbl">Repeat purchases</span>
+          <p>Buying the same thing again? Open a past requisition and choose the <strong>⧉</strong> (Duplicate) button at the top. You get a new requisition with today's date and the same items, payee and budget line, ready to review. Quotations and documents aren't copied — attach fresh ones.</p></div>
+      </section>
+
+      <section id="quotes">
+        <h2><span class="n">06</span> Quotations &amp; the AI reader</h2>
+        <p class="lede">Attach the quotes you collected, and the system reads them, compares them against what matters for the request, and recommends the sensible choice.</p>
+        <h3>Attaching &amp; automatic reading</h3>
+        <ol class="steps">
+          <li>In the Quotations area, choose <strong>Add quotation</strong>, then <strong>Attach</strong> the vendor's PDF or a photo of the quote.</li>
+          <li>You'll see <strong>🤖 Reading document…</strong>. Within a few seconds the row fills in the <strong>vendor</strong>, <strong>amount</strong>, <strong>delivery days</strong>, and a short <strong>note</strong> (payment terms / validity), read straight from the document.</li>
+          <li>A message tells you exactly what was read — always <strong>check it against the document</strong>. It only fills fields you left blank and never overwrites something you typed.</li>
+        </ol>
+        <div class="callout who"><span class="lbl">Vendor matching</span>
+          <p>If the read vendor is already in your registry, it's linked automatically. If not, it shows as "<em>Vendor name</em> (unregistered)" — you can leave it, or register them properly with the ＋ button.</p></div>
+        <h3>Choosing the best quote</h3>
+        <p>Set <strong>"What matters for this request?"</strong> — the system recommends the best quote against it and marks it with a <span class="chip c-blue">★ Recommended</span> badge:</p>
+        <ul class="tick">
+          <li><strong>Lowest price</strong> — the cheapest quote.</li>
+          <li><strong>Fastest delivery</strong> — the quickest, using the delivery days on each quote.</li>
+          <li><strong>Balanced</strong> — the best trade-off between price and delivery.</li>
+        </ul>
+        <p>Mark your chosen quote as <strong>Selected</strong>. Two things happen automatically: the requisition <strong>amount is filled from the quote</strong>, and the <strong>payee is set</strong> to that vendor (only if you hadn't already entered them). If you pick a quote that <em>isn't</em> the recommended one, the system asks you to add a short <strong>justification</strong> that approvers will see.</p>
+        <div class="callout tip"><span class="lbl">Print the comparison</span>
+          <p>Open a saved requisition and choose <strong>Print quotation summary</strong> for a FAM-branded comparison sheet — every vendor, price vs. the lowest, delivery, the recommended pick, your justification, and sign-off boxes, with the quote images attached.</p></div>
+        <p class="hint" style="color:var(--ink-3);font-size:14px">The AI reader is an optional feature that your IT team switches on. If it isn't reading your documents, simply enter the quote details by hand.</p>
+      </section>
+
+      <section id="reimb">
+        <h2><span class="n">07</span> Reimbursable expenses</h2>
+        <p class="lede">For when a staff member has already paid out of pocket and needs reimbursing — for example, a taxi or a small purchase made on the day.</p>
+        <ol class="steps">
+          <li>Choose <strong>Expense request</strong>. The number is <code>FAM/EXP/…</code>.</li>
+          <li>Fill in the purpose, the costs and the tax, and set the payee to <strong>the person being reimbursed</strong>.</li>
+          <li>Submit it. Only the <strong>Department Head</strong> needs to approve.</li>
+          <li>After approval, attach the <strong>receipts / invoices</strong> in the documents section.</li>
+          <li>Finance records it as <strong>reimbursed</strong> once the money is paid back.</li>
+        </ol>
+        <div class="callout who"><span class="lbl">Who can raise one</span>
+          <p>Any signed-in staff member (except view-only accounts) can raise an expense request for themselves.</p></div>
+      </section>
+
+      <section id="credit">
+        <h2><span class="n">08</span> Credit service requests</h2>
+        <p class="lede">For expenses incurred on credit, where a vendor will bill FAM later — such as a launch hire or a food bill for referees from an island, brought in weeks after the event.</p>
+        <p>The important difference from a reimbursement: <strong>the vendor is paid, not the staff</strong>, and <strong>approval must come first</strong>. The Department Head approves the staff to go ahead <em>before</em> the expense is incurred — so no one can bring in a bill later without a pre-approved request behind it.</p>
+        <div class="flow">
+          <span class="st">Raise request</span><span class="ar">→</span>
+          <span class="st">HOD approves to proceed</span><span class="ar">→</span>
+          <span class="st opt">Awaiting invoice</span><span class="ar">→</span>
+          <span class="st">Bill received</span><span class="ar">→</span>
+          <span class="st">Convert to requisition &amp; pay</span>
+        </div>
+        <ol class="steps">
+          <li>Choose <strong>Credit request</strong> (number <code>FAM/CSR/…</code>). Describe the expense, the estimated cost, the department, budget line, and the vendor if known.</li>
+          <li>The Department Head approves. The request now reads <span class="chip c-amber">Approved · awaiting invoice</span> — so you can always see which credit expenses are still waiting for a bill.</li>
+          <li>When the vendor's bill arrives, upload it in the documents section. The status becomes <span class="chip c-blue">Invoice received</span>.</li>
+          <li>Choose <strong>Convert to purchase requisition</strong>. This creates a full <code>FAM/REQ</code> requisition, pre-filled from the credit request — items, vendor, budget line, tax and the bill — that runs the normal approval &amp; payment flow. The original stays on record marked "Converted →".</li>
+        </ol>
+        <div class="callout tip"><span class="lbl">Tracking them</span>
+          <p>The <strong>Credit services &amp; invoices</strong> report lists every credit request and whether its bill has arrived — your running list of expenses you're still expecting invoices for.</p></div>
+      </section>
+
+      <section id="approve">
+        <h2><span class="n">09</span> Approving in the app</h2>
+        <p class="lede">If you're an approver, the items waiting on your signature are gathered in one place.</p>
+        <ol class="steps">
+          <li>Open the <strong>Approvals</strong> tab. Your queue shows only the requisitions currently waiting on <em>your</em> step, with the number, purpose, project, and total.</li>
+          <li>Choose <strong>Review</strong> to open the full requisition — items, quotations, budget line, and everything signed so far — or <strong>Approve</strong> directly from the queue.</li>
+          <li>Inside a requisition, your step shows <strong>Approve &amp; sign</strong>. Your signature is recorded electronically under your name and the date, marked <span class="chip c-slate">⚡ electronic</span>.</li>
+        </ol>
+        <p>The lower part of the Approvals tab lists <strong>all in-flight requisitions</strong> and who each is currently with, so anyone can see where things stand.</p>
+      </section>
+
+      <section id="links">
+        <h2><span class="n">10</span> Approving by link (phone-friendly)</h2>
+        <p class="lede">When an approver isn't a regular system user — or is simply out and about — Finance can send them a personal, one-click approval link.</p>
+        <ol class="steps">
+          <li>On the requisition, at the pending step, Finance chooses <strong>Send approval link</strong> and picks <strong>which registered person</strong> will sign.</li>
+          <li>The link is <strong>personal to that person</strong>. Send it to them (copy it, or use the pre-written email). Don't forward it to anyone else.</li>
+          <li>They open it on any phone or computer — no login. It shows the full requisition and reads <em>"signing as [their name]"</em>.</li>
+          <li>They choose <strong>Approve &amp; sign</strong>, <strong>Reject</strong>, or <strong>Hold</strong>. The decision is recorded as <em>"Electronically signed by [their name]"</em> — on screen and on the printed form.</li>
+        </ol>
+        <div class="callout warn"><span class="lbl">Built-in safeguard</span>
+          <p>The signer's identity is fixed when the link is created and cannot be changed from the approval page — so a signature always belongs to the right person. A link can be used once; after a final decision it stops working.</p></div>
+      </section>
+
+      <section id="paper">
+        <h2><span class="n">11</span> Signing on paper</h2>
+        <p class="lede">Some approvers prefer to sign the printed form by hand. Finance records that signature in the system so the chain keeps moving and the audit file stays complete.</p>
+        <ol class="steps">
+          <li>Print the requisition and have the approver sign it.</li>
+          <li>On the requisition, at the pending step, Finance chooses <strong>✍️ Physical signature</strong>.</li>
+          <li>Enter <strong>who signed</strong> and the <strong>date signed</strong>, and attach a <strong>scan or photo of the signed page</strong> (recommended — it's kept with the requisition's documents). Add a note if needed.</li>
+          <li>Choose <strong>Record physical signature</strong>. The step is signed and marked <span class="chip c-slate">✍️ physical</span>, and the next step becomes active.</li>
+        </ol>
+        <div class="callout who"><span class="lbl">Two kinds of signature</span>
+          <p>Every signed step shows how it was signed — <strong>⚡ electronic</strong> (in the app or by link) or <strong>✍️ physical</strong> (paper, recorded by Finance) — on screen and in the activity log.</p></div>
+      </section>
+
+      <section id="hold">
+        <h2><span class="n">12</span> Reject, hold &amp; reopen</h2>
+        <p class="lede">Approvers have more than a yes/no — you can pause an item or send it back with a reason.</p>
+        <div class="grid2">
+          <div class="mini"><h4>Reject</h4><p>Declines the requisition with a reason the requester sees. Use it when the request shouldn't proceed as-is.</p></div>
+          <div class="mini"><h4>Hold</h4><p>Keeps the item pending on your step with a required reason (e.g. "waiting on a second quote"). You can still approve or reject it later.</p></div>
+          <div class="mini"><h4>Reopen</h4><p>Clears a rejection or a hold and returns the step to pending so it can be decided again. The earlier comment stays on record.</p></div>
+          <div class="mini"><h4>Comments</h4><p>Every decision can carry a note. Notes are kept with the requisition for the audit trail.</p></div>
+        </div>
+        <p>Reopening is available to the approver for that step, and to Finance and Admin — useful when a rejection was resolved and the item should move forward.</p>
+      </section>
+
+      <section id="grn">
+        <h2><span class="n">13</span> Goods received</h2>
+        <p class="lede">Once a purchase is fully approved and delivered, record a Goods Received Note (GRN) — proof that FAM got what it paid for, before the vendor is paid.</p>
+        <ol class="steps">
+          <li>Open the fully approved purchase requisition and choose <strong>📦 Record goods received</strong>. Finance, Admin, or the person who prepared the requisition can do this.</li>
+          <li>Enter <strong>who received</strong> the goods, the <strong>date</strong>, and the vendor's <strong>delivery note reference</strong>.</li>
+          <li>For each item, enter the <strong>quantity received</strong> and its <strong>condition</strong> — Good, Partial, Damaged or Missing. Add notes and attach the signed delivery note if you have it.</li>
+          <li>Choose <strong>Save GRN</strong>. The requisition shows <span class="chip c-green">All received</span> when everything arrived in good condition, or <span class="chip c-amber">Partial / issues</span> otherwise.</li>
+        </ol>
+        <div class="callout warn"><span class="lbl">Record it before paying</span>
+          <p>Until a GRN is recorded, the requisition reminds Finance that the goods haven't been confirmed. Recording receipt first means FAM never pays for something that didn't arrive. Finance can edit a GRN later — for example when a back-order arrives.</p></div>
+      </section>
+
+      <section id="pay">
+        <h2><span class="n">14</span> Payment, Odoo &amp; documents</h2>
+        <p class="lede">Once a requisition is fully approved, Finance closes the loop.</p>
+        <ul class="tick">
+          <li><strong>Mark paid / reimbursed</strong> — record the payment with an optional reference (transfer or cheque number).</li>
+          <li><strong>Post to Odoo</strong> — once paid, one click creates the <strong>vendor bill in Odoo</strong> (the vendor is found or created, and the items and tax are carried over). The Odoo reference is saved on the requisition. This needs Odoo to be connected by your administrator.</li>
+          <li><strong>Mark manually</strong> — if you entered the bill in Odoo yourself, record its reference here instead.</li>
+          <li><strong>Invoices &amp; supporting documents</strong> — every requisition has a documents section. Upload the invoice, delivery note, or any paperwork so the complete audit file lives with the record.</li>
+        </ul>
+        <p>A requisition reads <span class="chip c-green">Completed</span> once it is fully approved, paid, and posted to Odoo.</p>
+        <div class="callout tip"><span class="lbl">Audit-ready</span>
+          <p>Because approvals, goods received, payment references, and documents all live on the one record, opening a requisition shows an auditor the whole story — who approved it, when, what arrived, what was paid, and against which invoice.</p></div>
+      </section>
+
+      <section id="combine">
+        <h2><span class="n">15</span> Combining expenses</h2>
+        <p class="lede">When one person has several small reimbursements — say, multiple pickup hires in a week — Finance can pay them together as one requisition.</p>
+        <ol class="steps">
+          <li>On the Requisitions page choose <strong>🧾 Combine expenses</strong>.</li>
+          <li>Pick the staff member, then tick the unpaid expense requests you want to roll up. They must be in the same currency.</li>
+          <li>Choose <strong>Combine selected</strong>. A single new expense requisition is created with all the line items and receipts together. Any GST or TGST on the originals is carried across as its own line, so the combined total matches exactly.</li>
+        </ol>
+        <p>Each original is marked <span class="chip c-slate">Combined into FAM/EXP/…</span> so nothing is paid twice, and if every original was already approved, the combined one is ready for Finance to pay in one go.</p>
+      </section>
+
+      <section id="vendors">
+        <h2><span class="n">16</span> Vendors</h2>
+        <p class="lede">The vendor registry keeps supplier details in one place, so quotes and payees link cleanly.</p>
+        <ul class="tick">
+          <li><strong>Register a vendor</strong> with name, category, contact, and bank details for payment.</li>
+          <li>Upload the vendor's <strong>profile sheet</strong> and <strong>GST registration certificate</strong> — kept on file for compliance and viewable from any device.</li>
+          <li>The summary at the top shows how many vendors are registered and active, total spend to date, and how many have documents on file. Each vendor shows its own <strong>spend to date</strong>.</li>
+          <li>Find vendors fast with the <strong>search</strong> (name, contact, phone or email), the <strong>category</strong> buttons, and the active / inactive filter.</li>
+        </ul>
+        <p>You can register a new vendor on the spot while filling a requisition — the ＋ button next to the payee or quote vendor — without losing your place in the form.</p>
+      </section>
+
+      <section id="reports">
+        <h2><span class="n">17</span> Reports &amp; exports</h2>
+        <p class="lede">The Reports tab turns the data into the standard procurement reports — each exportable as a branded PDF or a spreadsheet.</p>
+        <table class="tbl">
+          <thead><tr><th>Report</th><th>What it shows</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Requisition register</strong></td><td>The full audit log for a period — number, payee, budget line, status, payment, totals.</td></tr>
+            <tr><td><strong>Spend by budget line</strong></td><td>Totals per chart-of-accounts code, with suspense (unbudgeted) spend flagged.</td></tr>
+            <tr><td><strong>Spend by project</strong></td><td>Per-project totals, paid vs. outstanding.</td></tr>
+            <tr><td><strong>Spend by vendor</strong></td><td>Where the money goes, per payee.</td></tr>
+            <tr><td><strong>Pending approvals &amp; aging</strong></td><td>What's waiting, with whom, and for how long — with SLA breaches flagged.</td></tr>
+            <tr><td><strong>Credit services &amp; invoices</strong></td><td>Approved credit expenses and whether the vendor's bill has arrived.</td></tr>
+            <tr><td><strong>Monthly summary</strong></td><td>Created / approved / paid value per month.</td></tr>
+          </tbody>
+        </table>
+        <ol class="steps">
+          <li>Pick the report from the bar along the top.</li>
+          <li>Set the period — use a quick button (<strong>This month</strong>, <strong>Last month</strong>, <strong>This quarter</strong>, <strong>This year</strong>, <strong>All time</strong>) or enter <strong>From</strong> and <strong>To</strong> dates — and filter by <strong>department</strong> or <strong>type</strong> if needed. The summary figures and preview update as you go.</li>
+          <li>Choose <strong>Print / PDF</strong> and set the destination to <strong>"Save as PDF"</strong> — or choose <strong>⬇ Export CSV</strong> to open the same report in Excel.</li>
+        </ol>
+      </section>
+
+      <section id="activity">
+        <h2><span class="n">18</span> Activity log</h2>
+        <p class="lede">Every requisition carries a complete, time-stamped history at the bottom of its page, under <strong>Activity</strong>.</p>
+        <ul class="tick">
+          <li>When it was <strong>created</strong> and by whom, and any later <strong>edits</strong>.</li>
+          <li>Every <strong>signature</strong> — with who, when, and how it was given (⚡ via link, or ✍️ physical).</li>
+          <li><strong>Goods received</strong>, <strong>payment</strong> recorded or changed, <strong>Odoo posting</strong>, and any <strong>renumbering</strong>.</li>
+        </ul>
+        <div class="callout who"><span class="lbl">Tamper-proof</span>
+          <p>The log is written by the server itself. No user of the system — not even an administrator — can edit or delete its entries, so it's a reliable record for auditors.</p></div>
+      </section>
+
+      <section id="admin">
+        <h2><span class="n">19</span> Admin settings <span class="chip c-red" style="font-size:12px">Admin only</span></h2>
+        <p class="lede">The Admin tab is where administrators configure the system. Changes apply to new requisitions — requisitions already raised keep the settings they were created with.</p>
+        <table class="tbl">
+          <thead><tr><th>Tab</th><th>What you can set</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Numbering</strong></td><td>The prefix (e.g. <code>FAM/REQ</code> — expense and credit numbers follow automatically) and the next number for each type, so you can continue an existing paper sequence. Numbers never go below one already used, and restart at 001 each January.</td></tr>
+            <tr><td><strong>Tax</strong></td><td>The GST and TGST rates, and how many quotations a purchase requisition needs.</td></tr>
+            <tr><td><strong>Approval chain</strong></td><td>The signing order. For each step: the label on the form, the signer's title, and who may sign. Switch a step off to skip it, reorder with ↑ ↓, add new steps, or remove one entirely.</td></tr>
+            <tr><td><strong>Low-value rule</strong></td><td>Optional. Below an amount (sub-total, before tax), purchases need fewer quotations and only the approvers you tick.</td></tr>
+            <tr><td><strong>Categories &amp; lists</strong></td><td>Vendor categories, currencies (★ sets the default) and departments. Add or remove entries — changes save immediately.</td></tr>
+            <tr><td><strong>Odoo</strong></td><td>The Odoo address, database and username used by <strong>Post to Odoo</strong>, plus optional tax and journal IDs. Use <strong>Test connection</strong> to check it. The Odoo API key is installed on the server by your IT team and is never entered here.</td></tr>
+            <tr><td><strong>Users</strong></td><td>Add, reset and remove accounts (below).</td></tr>
+          </tbody>
+        </table>
+        <h3>Managing users</h3>
+        <ul class="tick">
+          <li><strong>Add a user</strong> — set their name, role, and which approval steps they may sign. The system generates a username and password, <em>shown once</em> — copy it and pass it on securely.</li>
+          <li><strong>Reset a password</strong> — open the user, choose <strong>Reset password</strong>, and set a new one (or let the system generate one). It's shown once to share; the old one stops working immediately.</li>
+          <li><strong>Delete a user</strong> — removes their access. Requisitions they signed keep their name on record.</li>
+        </ul>
+        <div class="callout warn"><span class="lbl">Safety guards</span>
+          <p>You can't delete your own account, and you can't delete the last remaining administrator — so the organisation can never lock itself out.</p></div>
+      </section>
+
+      <section id="status">
+        <h2><span class="n">20</span> Status reference</h2>
+        <p class="lede">The label on a requisition tells you exactly where it is. Here's what each one means.</p>
+        <table class="tbl">
+          <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><span class="chip c-amber">Awaiting [step]</span></td><td>Waiting for that person to sign. It's active on their step now.</td></tr>
+            <tr><td><span class="chip c-amber">On hold — [step]</span></td><td>An approver paused it with a reason; it can still be approved or rejected.</td></tr>
+            <tr><td><span class="chip c-red">Rejected</span></td><td>An approver declined it. It can be reopened if the issue is resolved.</td></tr>
+            <tr><td><span class="chip c-amber">Approved · awaiting invoice</span></td><td>Credit request: approved, but the vendor's bill hasn't arrived yet.</td></tr>
+            <tr><td><span class="chip c-blue">Invoice received</span></td><td>Credit request: the bill is in and it can be converted for payment.</td></tr>
+            <tr><td><span class="chip c-blue">Approved · unpaid</span></td><td>Fully approved and ready for Finance to pay (record goods received first for purchases).</td></tr>
+            <tr><td><span class="chip c-blue">Paid · awaiting Odoo</span></td><td>Paid, waiting to be posted to the Odoo accounts.</td></tr>
+            <tr><td><span class="chip c-green">Completed</span></td><td>Approved, paid, and posted to Odoo. Done.</td></tr>
+            <tr><td><span class="chip c-slate">Combined into …</span></td><td>Rolled into a combined expense requisition, paid there.</td></tr>
+            <tr><td><span class="chip c-slate">Converted → …</span></td><td>A credit request that became a full purchase requisition.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="faq">
+        <h2><span class="n">21</span> Tips &amp; FAQ</h2>
+        <div class="grid2">
+          <div class="mini"><h4>The number changed after I saved.</h4><p>That's expected. The number shown while you type is provisional; the server confirms the final one when you save, so two people saving at once never collide.</p></div>
+          <div class="mini"><h4>The AI didn't read a field correctly.</h4><p>It's an aid, not the final word. Just type over anything that's off — you're always asked to verify what it read.</p></div>
+          <div class="mini"><h4>A vendor quoted without GST.</h4><p>Set <strong>Tax</strong> to <strong>No tax</strong> on the requisition. For resort or tourism suppliers charging TGST, choose <strong>TGST 17%</strong>.</p></div>
+          <div class="mini"><h4>Why can't I save my requisition?</h4><p>Most often, it needs more quotations with an amount entered. The form tells you how many are required and how many you have.</p></div>
+          <div class="mini"><h4>An approver signed the printed form.</h4><p>Finance records it with <strong>✍️ Physical signature</strong> on that step, attaching a scan of the signed page.</p></div>
+          <div class="mini"><h4>Can an approver approve on their phone?</h4><p>Yes — either by signing in, or via the personal approval link Finance sends. No app to install.</p></div>
+          <div class="mini"><h4>Someone brought a bill for an event with no paperwork.</h4><p>That's what Credit service requests prevent — the Department Head must approve <em>before</em> the expense. Bills without a prior approved request shouldn't be entered.</p></div>
+          <div class="mini"><h4>How do I get a report for the auditors?</h4><p>Reports tab → pick the report and period → <strong>Print / PDF</strong> → "Save as PDF", or <strong>Export CSV</strong> for a spreadsheet.</p></div>
+        </div>
+        <div class="callout tip"><span class="lbl">Need help?</span>
+          <p>For access, password resets, or a new account, contact your FAM system administrator.</p></div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="end">
+    Football Association of Maldives · Requisition System — User Manual v2.0, November 2026. Prepared for internal use. Screens and labels may vary slightly as the system is improved.
+  </footer>
+</div>
+
+</body></html>

@@ -1,0 +1,19 @@
+# Single-domain reverse proxy with automatic HTTPS (Let's Encrypt).
+# The app and PocketBase share one domain:
+#   /api/*  and  /_/*   → PocketBase   (API, file downloads, realtime, admin UI)
+#   everything else      → the frontend
+# Because they share an origin there is no CORS to configure.
+#
+# DOMAIN comes from the .env file. Use a real domain (DNS pointed at this server,
+# ports 80 and 443 open) for a trusted certificate, or "localhost" to test with
+# Caddy's internal CA.
+
+{$DOMAIN} {
+	@backend path /api/* /_/*
+	handle @backend {
+		reverse_proxy pocketbase:8090
+	}
+	handle {
+		reverse_proxy web:80
+	}
+}
